@@ -165,6 +165,14 @@ async function run(){
             res.send(result);
         })
 
+        //seller delet
+        app.delete('/newseller/:id',  async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await sellerCollections.deleteOne(filter);
+            res.send(result);
+        })
+
         //admin
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
