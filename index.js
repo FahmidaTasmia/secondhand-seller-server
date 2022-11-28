@@ -41,6 +41,20 @@ async function run(){
         const usersCollections = client.db('cMart').collection('users');
         const bookingsCollection = client.db('cMart').collection('bookings');
 
+            //verify admin middleware
+
+            const verifyAdmin = async (req, res, next) =>{
+                const decodedEmail = req.decoded.email;
+                const query = { email: decodedEmail };
+                const user = await usersCollections.findOne(query);
+    
+                if (user?.role !== 'admin') {
+                    return res.status(403).send({ message: 'forbidden access' })
+                }
+                next();
+            }
+
+
         //allcategory
         app.get('/category', async(req,res)=>{
             const query={};
@@ -137,7 +151,7 @@ async function run(){
         })
 
 
-        
+
         
         app.post('/users',async(req,res)=>{
            const user = req.body;
