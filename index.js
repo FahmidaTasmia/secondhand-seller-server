@@ -142,6 +142,14 @@ async function run(){
             res.send(users);
         });
 
+        //all seller
+
+        app.get('/sellers', async(req,res)=>{
+            const query={};
+            const result = await usersCollections.find(query).project({value:1}).toArray();
+            res.send(result);
+        })
+
         //admin
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
