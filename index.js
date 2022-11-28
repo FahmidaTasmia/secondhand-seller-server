@@ -151,6 +151,20 @@ async function run(){
             res.send(result);
         })
 
+        //get seller
+        app.get('/newseller',  async (req, res) => {
+            const query = {};
+            const doctors = await sellerCollections.find(query).toArray();
+            res.send(doctors);
+        })
+
+        //sellers add
+        app.post('/newseller', async(req,res)=>{
+            const seller= req.body;
+            const result = await sellerCollections.insertOne(seller);
+            res.send(result);
+        })
+
         //admin
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
@@ -190,12 +204,7 @@ async function run(){
         })
 
 
-        //sellers add
-        app.post('/sellers', async(req,res)=>{
-            const seller= req.body;
-            const result = await sellerCollections.insertOne(seller);
-            res.send(result);
-        })
+        
 
     }
 
