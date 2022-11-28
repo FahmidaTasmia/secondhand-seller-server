@@ -72,33 +72,23 @@ async function run(){
             res.send(result);
         })
 
-        //users
-        app.get('/jwt', async (req, res) => {
-            const email = req.query.email;
-            const query = { email: email };
-            const user = await usersCollections.findOne(query);
-            if (user) {
-                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '5h' })
-                return res.send({ accessToken: token });
-            }
-            res.status(403).send({ accessToken: '' })
-        });
-
-        app.get('/users', async (req, res) => {
-            const query = {};
-            const users = await usersCollections.find(query).toArray();
-            res.send(users);
-        });
+        
 
         //booking
 
         //get booking
 
-        app.get('/bookings', async(req,res)=>{
-            const email= req.query.email;
-            const query={email:email};
+        app.get('/bookings', verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            const decodedEmail = req.decoded.email;
+
+            if (email !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+
+            const query = { email: email };
             const bookings = await bookingsCollection.find(query).toArray();
-            res.send(bookings)
+            res.send(bookings);
         })
 
 
@@ -119,6 +109,25 @@ async function run(){
             res.send(result)
         })
 
+
+        //users
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await usersCollections.findOne(query);
+            if (user) {
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '5h' })
+                return res.send({ accessToken: token });
+            }
+            res.status(403).send({ accessToken: '' })
+        });
+
+        app.get('/users', async (req, res) => {
+            const query = {};
+            const users = await usersCollections.find(query).toArray();
+            res.send(users);
+        });
+
         //admin
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
@@ -127,6 +136,8 @@ async function run(){
             res.send({ isAdmin: user?.role === 'admin' });
         })
 
+
+        
         
         app.post('/users',async(req,res)=>{
            const user = req.body;
