@@ -40,6 +40,7 @@ async function run(){
         const categoryCollections = client.db('cMart').collection('CategoryCollections');
         const usersCollections = client.db('cMart').collection('users');
         const bookingsCollection = client.db('cMart').collection('bookings');
+        const sellerCollections = client.db('cMart').collection('seller');
 
             //verify admin middleware
 
@@ -185,6 +186,14 @@ async function run(){
                 }
             }
             const result = await usersCollections.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+
+        //sellers add
+        app.post('/sellers', async(req,res)=>{
+            const seller= req.body;
+            const result = await sellerCollections.insertOne(seller);
             res.send(result);
         })
 
