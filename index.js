@@ -106,6 +106,15 @@ async function run(){
             res.send(bookings);
         })
 
+        //get booking by id
+
+        app.get('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const booking = await bookingsCollection.findOne(query);
+            res.send(booking);
+        })
+
 
         //post bookings
         app.post('/bookings', async(req,res)=>{
@@ -152,21 +161,21 @@ async function run(){
         })
 
         //get seller
-        app.get('/newseller',  async (req, res) => {
+        app.get('/newseller',verifyJWT,verifyAdmin,  async (req, res) => {
             const query = {};
-            const doctors = await sellerCollections.find(query).toArray();
-            res.send(doctors);
+            const result = await sellerCollections.find(query).toArray();
+            res.send(result);
         })
 
         //sellers add
-        app.post('/newseller', async(req,res)=>{
+        app.post('/newseller', verifyJWT,verifyAdmin, async(req,res)=>{
             const seller= req.body;
             const result = await sellerCollections.insertOne(seller);
             res.send(result);
         })
 
         //seller delet
-        app.delete('/newseller/:id',  async (req, res) => {
+        app.delete('/newseller/:id',verifyJWT,verifyAdmin,  async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await sellerCollections.deleteOne(filter);
